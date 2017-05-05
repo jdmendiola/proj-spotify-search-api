@@ -22,6 +22,7 @@ let app = (function(){
                 },
                 success: function(response){
                     console.log("success");
+                    console.log(response);
                     SpotifySearch.handleData(response);
                 },
                 error: function(){
