@@ -2,6 +2,8 @@ let app = (function(){
 
     let SpotifySearch = {
 
+        welcomeMessage: $("#albums li.desc"),
+
         searchForm: $("#submit"),
 
         searchHandler: function(e){
@@ -13,12 +15,13 @@ let app = (function(){
                     type: "album"
                 },
                 success: function(response){
-                    console.log(this);
-                    $("#albums li.desc").hide();
+                    console.log(response);
+                    SpotifySearch.welcomeMessage.hide();
                     SpotifySearch.handleData(response);
                 },
                 error: function(){
-                    alert('fail search');
+                    SpotifySearch.welcomeMessage.hide();
+                    SpotifySearch.handleNull();
                 }
             });
         },
@@ -26,26 +29,42 @@ let app = (function(){
         handleData: function(response){
 
             let albumItems = response.albums.items;
+
             console.log($(albumItems));
 
-            for(let albumData = 0; albumData < albumItems.length; albumData++){
+            if (albumItems.length !== 0){
+                for(let albumData = 0; albumData < albumItems.length; albumData++){
 
-                let albumArtist = albumItems[albumData].artists[0].name;
-                let albumTitle = albumItems[albumData].name;
-                let imgURL = albumItems[albumData].images[0].url;
-                let liResults = `
-                    <li>
-                        <div class="album-wrap">
-                            <img class="album-art" src="${imgURL}">
-                        </div>
-                        <span class="album-title">${albumTitle}</span>
-                        <span class="album-artist">${albumArtist}</span>
-                    </li>
-                `;
+                    let albumArtist = albumItems[albumData].artists[0].name;
+                    let albumTitle = albumItems[albumData].name;
+                    let imgURL = albumItems[albumData].images[0].url;
+                    let liResults = `
+                        <li>
+                            <div class="album-wrap">
+                                <img class="album-art" src="${imgURL}">
+                            </div>
+                            <span class="album-title">${albumTitle}</span>
+                            <span class="album-artist">${albumArtist}</span>
+                        </li>
+                    `;
 
-                $("#albums").append(liResults);
-
+                    $("#albums").append(liResults);
+                }
+            } else {
+                this.handleNull();
             }
+
+        },
+
+        handleNull: function(){
+            let searchValue = $("#search").val();
+            let liResults = `
+                <li class='no-albums desc'>
+                  <i class='material-icons icon-help'>help_outline</i>No albums found that match: ${searchValue}.
+                </li>
+            `;
+
+            $("#albums").append(liResults);
         },
 
         init: function(){
