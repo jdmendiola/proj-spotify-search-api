@@ -6,8 +6,14 @@ let app = (function(){
 
         searchForm: $("#submit"),
 
+        init: function(){
+            this.searchForm.on("click", this.searchHandler.bind(this));
+        },
+
         searchHandler: function(e){
             e.preventDefault();
+            this.clearResults();
+            this.welcomeMessage.hide();
             $.ajax({
                 url: "https://api.spotify.com/v1/search",
                 data: {
@@ -15,13 +21,12 @@ let app = (function(){
                     type: "album"
                 },
                 success: function(response){
-                    console.log(response);
-                    SpotifySearch.welcomeMessage.hide();
+                    console.log("success");
                     SpotifySearch.handleData(response);
                 },
                 error: function(){
-                    SpotifySearch.welcomeMessage.hide();
-                    SpotifySearch.handleNull();
+                    console.log("Error");
+                    SpotifySearch.handleNoResults(true);
                 }
             });
         },
@@ -30,9 +35,8 @@ let app = (function(){
 
             let albumItems = response.albums.items;
 
-            console.log($(albumItems));
-
             if (albumItems.length !== 0){
+
                 for(let albumData = 0; albumData < albumItems.length; albumData++){
 
                     let albumArtist = albumItems[albumData].artists[0].name;
@@ -50,14 +54,16 @@ let app = (function(){
 
                     $("#albums").append(liResults);
                 }
+
             } else {
-                this.handleNull();
+                SpotifySearch.handleNoResults();
             }
 
         },
 
-        handleNull: function(){
-            let searchValue = $("#search").val();
+        handleNoResults: function(failure = false){
+
+            let searchValue = failure ? "blank search query" : $("#search").val();
             let liResults = `
                 <li class='no-albums desc'>
                   <i class='material-icons icon-help'>help_outline</i>No albums found that match: ${searchValue}.
@@ -65,13 +71,18 @@ let app = (function(){
             `;
 
             $("#albums").append(liResults);
+
         },
 
-        init: function(){
-            console.log("fire");
-            this.searchForm.on("click", this.searchHandler.bind(this));
-        }
+        clearResults: function(){
 
+            let liResults = $("#albums li");
+
+            liResults.each(function(){
+                $(this).remove();
+            });
+
+        }
 
     } // end
 
