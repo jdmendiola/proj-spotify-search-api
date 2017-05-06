@@ -95,24 +95,28 @@ let app = (function(){
         handleAlbumDetails: function(album, index){
 
             console.log(album, index);
-            let albumTitle = album.name;
-            let albumArtist = album.artists[0].name;
-            let albumArt = album.images[0].url;
-            let albumReleaseDate = album.release_date.substring(0, 4);
+            
+            if(SpotifySearch.albumData[index] !== undefined && SpotifySearch.albumData[index] !== null){
+                let albumTitle = album.name;
+                let albumArtist = album.artists[0].name;
+                let albumArt = album.images[0].url;
+                let albumReleaseDate = album.release_date.substring(0, 4);
 
-            function albumData(title, artist, art, date, tracks = []){
-                this.title = title;
-                this.artist = artist;
-                this.art = art;
-                this.date = date;
-                this.tracks = tracks
+                function albumData(title, artist, art, date, tracks = []){
+                    this.title = title;
+                    this.artist = artist;
+                    this.art = art;
+                    this.date = date;
+                    this.tracks = tracks
+                }
+
+                let dataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate);
+
+                SpotifySearch.albumData[index] = dataObj;
+
+                console.log(SpotifySearch.albumData);
             }
 
-            let dataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate);
-
-            SpotifySearch.albumData[index] = dataObj;
-
-            console.log(SpotifySearch.albumData);
 
         },
 
