@@ -81,12 +81,14 @@ let app = (function(){
         getAlbumDetails: function(){
 
             let albumId = $(this).data("id");
+
             let albumIndex = $("#albums li").index($(this).parent("li"));
 
             $.ajax({
                 url: "https://api.spotify.com/v1/albums/" + albumId,
                 success: function(response){
                     SpotifySearch.handleAlbumDetails(response, albumIndex);
+                    SpotifySearch.loadAlbumDetails(albumIndex);
                 }
             });
 
@@ -94,11 +96,8 @@ let app = (function(){
 
         handleAlbumDetails: function(album, index){
 
-            console.log(album, index);
-            console.log(SpotifySearch.albumData[index]);
-            if(SpotifySearch.albumData[index] !== undefined){
-                alert(" undefined ");
-            } else {
+            if (SpotifySearch.albumData[index] == undefined){
+
                 let albumTitle = album.name;
                 let albumArtist = album.artists[0].name;
                 let albumArt = album.images[0].url;
@@ -112,19 +111,24 @@ let app = (function(){
                     this.tracks = tracks
                 }
 
-                let dataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate);
+                let albumDataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate);
 
-                SpotifySearch.albumData[index] = dataObj;
+                SpotifySearch.albumData[index] = albumDataObj;
 
-                console.log(SpotifySearch.albumData);
+            } else {
+                console.log("That index is already in the album data array. Let's not spam Spotify :)");
             }
 
+        },
 
+        loadAlbumDetails: function(albumIndex){
+            console.log(SpotifySearch.albumData[albumIndex]);
         },
 
         handleNoResults: function(failure = false){
 
             let searchValue = failure ? "blank search query" : $("#search").val();
+
             let liResults = `
                 <li class='no-albums desc'>
                   <i class='material-icons icon-help'>help_outline</i>No albums found that match: ${searchValue}
