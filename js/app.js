@@ -6,16 +6,20 @@ let app = (function(){
 
         searchForm: $("#submit"),
 
-        albumTracks: [],
+        albumData: [],
 
         init: function(){
             this.searchForm.on("click", this.searchHandler.bind(this));
         },
 
         searchHandler: function(e){
+
             e.preventDefault();
-            this.clearResults();
+
+            this.handleResults();
+
             this.welcomeMessage.hide();
+
             if ($("#search").val() !== ""){
                 $.ajax({
                     url: "https://api.spotify.com/v1/search",
@@ -24,8 +28,7 @@ let app = (function(){
                         type: "album"
                     },
                     success: function(response){
-                        console.log("success");
-                        console.log(response);
+                        console.log("success jqXHR", response);
                         SpotifySearch.handleData(response);
                     }
                 });
@@ -72,24 +75,46 @@ let app = (function(){
         },
 
         handleAlbumTitle: function(){
-            $("#albums li").on("click", "span.album-title", this.getAlbumTracks);
+            $("#albums li").on("click", "span.album-title", this.getAlbumDetails);
         },
 
-        getAlbumTracks: function(){
+        getAlbumDetails: function(){
+
             let albumId = $(this).data("id");
+            let albumIndex = $("#albums li").index($(this).parent("li"));
 
             $.ajax({
                 url: "https://api.spotify.com/v1/albums/" + albumId,
                 success: function(response){
-                    console.log(response);
+                    SpotifySearch.handleAlbumDetails(response, albumIndex);
                 }
             });
 
         },
 
-        handleAlbumTracks: function(response){
+        handleAlbumDetails: function(album, index){
 
-        }
+            console.log(album, index);
+            let albumTitle = album.name;
+            let albumArtist = album.artists[0].name;
+            let albumArt = album.images[0].url;
+            let albumReleaseDate = album.release_date.substring(0, 4);
+
+            function albumData(title, artist, art, date, tracks = []){
+                this.title = title;
+                this.artist = artist;
+                this.art = art;
+                this.date = date;
+                this.tracks = tracks
+            }
+
+            let dataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate);
+
+            SpotifySearch.albumData[index] = dataObj;
+
+            console.log(SpotifySearch.albumData);
+
+        },
 
         handleNoResults: function(failure = false){
 
@@ -104,7 +129,7 @@ let app = (function(){
 
         },
 
-        clearResults: function(){
+        handleResults: function(){
 
             let liResults = $("#albums li");
 
