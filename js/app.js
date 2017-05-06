@@ -95,8 +95,10 @@ let app = (function(){
         handleAlbumDetails: function(album, index){
 
             console.log(album, index);
-            
-            if(SpotifySearch.albumData[index] !== undefined && SpotifySearch.albumData[index] !== null){
+            console.log(SpotifySearch.albumData[index]);
+            if(SpotifySearch.albumData[index] !== undefined){
+                alert(" undefined ");
+            } else {
                 let albumTitle = album.name;
                 let albumArtist = album.artists[0].name;
                 let albumArt = album.images[0].url;
