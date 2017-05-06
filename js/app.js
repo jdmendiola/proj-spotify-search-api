@@ -14,22 +14,23 @@ let app = (function(){
             e.preventDefault();
             this.clearResults();
             this.welcomeMessage.hide();
-            $.ajax({
-                url: "https://api.spotify.com/v1/search",
-                data: {
-                    q: $("#search").val(),
-                    type: "album"
-                },
-                success: function(response){
-                    console.log("success");
-                    console.log(response);
-                    SpotifySearch.handleData(response);
-                },
-                error: function(){
-                    console.log("Error");
-                    SpotifySearch.handleNoResults(true);
-                }
-            });
+            if ($("#search").val() !== ""){
+                $.ajax({
+                    url: "https://api.spotify.com/v1/search",
+                    data: {
+                        q: $("#search").val(),
+                        type: "album"
+                    },
+                    success: function(response){
+                        console.log("success");
+                        console.log(response);
+                        SpotifySearch.handleData(response);
+                    }
+                });
+            } else {
+                console.log("Error");
+                SpotifySearch.handleNoResults(true);
+            }
         },
 
         handleData: function(response){
@@ -74,7 +75,7 @@ let app = (function(){
 
         getAlbumTracks: function(){
             let albumId = $(this).data("id");
-            
+
         },
 
         handleNoResults: function(failure = false){
