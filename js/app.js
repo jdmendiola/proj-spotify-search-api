@@ -40,15 +40,19 @@ let app = (function(){
 
                 for(let albumData = 0; albumData < albumItems.length; albumData++){
 
+                    let albumId = albumItems[albumData].id;
                     let albumArtist = albumItems[albumData].artists[0].name;
                     let albumTitle = albumItems[albumData].name;
+                    let albumURL = albumItems[albumData].external_urls.spotify;
                     let imgURL = albumItems[albumData].images[0].url;
                     let liResults = `
                         <li>
                             <div class="album-wrap">
-                                <img class="album-art" src="${imgURL}">
+                                <a href="${albumURL}" target="_blank">
+                                    <img class="album-art" src="${imgURL}">
+                                </a>
                             </div>
-                            <span class="album-title">${albumTitle}</span>
+                            <span class="album-title" data-id="${albumId}">${albumTitle}</span>
                             <span class="album-artist">${albumArtist}</span>
                         </li>
                     `;
@@ -56,10 +60,21 @@ let app = (function(){
                     $("#albums").append(liResults);
                 }
 
+                SpotifySearch.handleAlbumTitle();
+
             } else {
                 SpotifySearch.handleNoResults();
             }
 
+        },
+
+        handleAlbumTitle: function(){
+            $("#albums li").on("click", "span.album-title", this.getAlbumTracks);
+        },
+
+        getAlbumTracks: function(){
+            let albumId = $(this).data("id");
+            
         },
 
         handleNoResults: function(failure = false){
@@ -67,7 +82,7 @@ let app = (function(){
             let searchValue = failure ? "blank search query" : $("#search").val();
             let liResults = `
                 <li class='no-albums desc'>
-                  <i class='material-icons icon-help'>help_outline</i>No albums found that match: ${searchValue}.
+                  <i class='material-icons icon-help'>help_outline</i>No albums found that match: ${searchValue}
                 </li>
             `;
 
