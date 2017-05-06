@@ -6,6 +6,8 @@ let app = (function(){
 
         searchForm: $("#submit"),
 
+        albumTracks: [],
+
         init: function(){
             this.searchForm.on("click", this.searchHandler.bind(this));
         },
@@ -76,7 +78,18 @@ let app = (function(){
         getAlbumTracks: function(){
             let albumId = $(this).data("id");
 
+            $.ajax({
+                url: "https://api.spotify.com/v1/albums/" + albumId,
+                success: function(response){
+                    console.log(response);
+                }
+            });
+
         },
+
+        handleAlbumTracks: function(response){
+
+        }
 
         handleNoResults: function(failure = false){
 
