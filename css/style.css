@@ -212,7 +212,13 @@ button {
 .album-details h1{
     display: block;
     width: 400px;
+    cursor: pointer;
 }
+.album-details a:hover{
+    color: #FFF;
+    text-decoration: underline;
+}
+
 
 .album-details h4{
     margin-bottom: 60px;

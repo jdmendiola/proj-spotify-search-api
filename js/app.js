@@ -67,20 +67,20 @@ let app = (function(){
                     let albumId = albumItems[albumData].id;
                     let albumArtist = albumItems[albumData].artists[0].name;
                     let albumTitle = albumItems[albumData].name;
-                    let albumURL = albumItems[albumData].external_urls.spotify;
+                    //let albumURL = albumItems[albumData].external_urls.spotify;
                     let imgURL = albumItems[albumData].images[0].url;
                     let liResults = `
                         <li>
                             <div class="album-wrap">
-                                <a href="${albumURL}" target="_blank">
-                                    <img class="album-art" src="${imgURL}">
-                                </a>
+                                <img class="album-art" src="${imgURL}">
                             </div>
                             <span class="album-title" data-id="${albumId}">${albumTitle}</span>
                             <span class="album-artist">${albumArtist}</span>
                         </li>
                     `;
-
+                    // <a href="${albumURL}" target="_blank">
+                    //     <img class="album-art" src="${imgURL}">
+                    // </a>
                     $("#albums").append(liResults);
                 }
 
@@ -121,22 +121,29 @@ let app = (function(){
         },
 
         handleAlbumDetails: function(album, albumIndex){
-
             let albumTitle = album.name;
             let albumArtist = album.artists[0].name;
             let albumArt = album.images[0].url;
             let albumReleaseDate = album.release_date.substring(0, 4);
             let albumTracks = album.tracks.items;
+            let albumURL = album.external_urls.spotify;
 
-            function albumData(title, artist, art, date, tracks){
+            function albumData(title, artist, art, date, tracks, url){
                 this.title = title;
                 this.artist = artist;
                 this.art = art;
                 this.date = date;
                 this.tracks = tracks;
+                this.url = url;
             }
 
-            let albumDataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate, albumTracks);
+            let albumDataObj = new albumData(
+                albumTitle,
+                albumArtist,
+                albumArt,
+                albumReleaseDate,
+                albumTracks,
+                albumURL);
 
             SpotifySearch.albumData[albumIndex] = albumDataObj;
 
@@ -157,6 +164,7 @@ let app = (function(){
 
             pageAlbumImg.attr("src", albumData.art);
             pageAlbumTitle.text(`${albumData.title} (${albumData.date})`);
+            pageAlbumTitle.wrap(`<a target="_blank" href="${albumData.url}"></a>`)
             pageAlbumArtist.text(albumData.artist);
 
             //load tracks
