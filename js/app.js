@@ -20,6 +20,10 @@ let app = (function(){
 
             this.welcomeMessage.hide();
 
+            $(".main-content").removeClass("hide");
+            $(".album-details").removeClass("hide");
+            $(".album-details").addClass("hide");
+
             if ($("#search").val() !== ""){
                 $.ajax({
                     url: "https://api.spotify.com/v1/search",
@@ -125,6 +129,10 @@ let app = (function(){
         },
 
         loadAlbumDetails: function(albumIndex){
+
+            $(".main-content").toggleClass("hide");
+            $(".album-details").toggleClass("hide");
+
             let pageAlbumTitle = $(".album-details h1");
             let pageAlbumArtist = $(".album-details h4");
             let pageAlbumImg = $(".album-img img");
@@ -136,6 +144,17 @@ let app = (function(){
             pageAlbumImg.attr("src", albumData.art);
             pageAlbumTitle.text(`${albumData.title} (${albumData.date})`);
             pageAlbumArtist.text(albumData.artist);
+
+            //load tracks
+            for (let i = 0; i < albumData.tracks.length; i++){
+                let trackNo = albumData.tracks[i].track_number;
+                let trackName = albumData.tracks[i].name;
+                let trackLi = `
+                    <li>${trackNo}. ${trackName}</li>
+                `;
+                $(".album-tracks").append(trackLi);
+            }
+
         },
 
         handleNoResults: function(failure = false){
@@ -155,8 +174,13 @@ let app = (function(){
         handleResults: function(){
 
             let liResults = $("#albums li");
+            let trackLists = $(".album-tracks li");
 
             liResults.each(function(){
+                $(this).remove();
+            });
+
+            trackLists.each(function(){
                 $(this).remove();
             });
 
