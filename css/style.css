@@ -254,6 +254,8 @@ button {
     margin-bottom: 20px;
     color: #FFF;
     font-size: 28px;
+}
+.back-to-search:hover{
     text-decoration: underline;
 }
 
