@@ -244,8 +244,17 @@ button {
 }
 
 .album-content{
-    padding-top: 80px;
+    padding-top: 50px;
     margin-left: 60px;
+}
+
+.back-to-search{
+    cursor: pointer;
+    display: block;
+    margin-bottom: 20px;
+    color: #FFF;
+    font-size: 28px;
+    text-decoration: underline;
 }
 
 .main-header {

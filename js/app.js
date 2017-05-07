@@ -6,10 +6,20 @@ let app = (function(){
 
         searchForm: $("#submit"),
 
+        backSearchButton: $(".back-to-search"),
+
         albumData: [],
 
         init: function(){
             this.searchForm.on("click", this.searchHandler.bind(this));
+            this.backSearchButton.on("click", this.backSearchHandler.bind(this));
+        },
+
+        backSearchHandler: function(){
+            $(".main-content").removeClass("hide");
+            $(".album-details").removeClass("hide");
+            $(".album-details").addClass("hide");
+            this.handleTrackResults();
         },
 
         searchHandler: function(e){
@@ -18,7 +28,11 @@ let app = (function(){
 
             this.handleResults();
 
+            this.handleTrackResults();
+
             this.welcomeMessage.hide();
+
+            this.albumData.length = 0;
 
             $(".main-content").removeClass("hide");
             $(".album-details").removeClass("hide");
@@ -174,16 +188,20 @@ let app = (function(){
         handleResults: function(){
 
             let liResults = $("#albums li");
-            let trackLists = $(".album-tracks li");
 
             liResults.each(function(){
                 $(this).remove();
             });
 
+        },
+
+        handleTrackResults: function(){
+
+            let trackLists = $(".album-tracks li");
+
             trackLists.each(function(){
                 $(this).remove();
             });
-
         }
 
     } // end
