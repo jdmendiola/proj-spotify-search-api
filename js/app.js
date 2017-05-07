@@ -28,12 +28,12 @@ let app = (function(){
                         type: "album"
                     },
                     success: function(response){
-                        console.log("success jqXHR", response);
+                        //console.log("success jqXHR", response);
                         SpotifySearch.handleData(response);
                     }
                 });
             } else {
-                console.log("Error");
+                //console.log("Error");
                 SpotifySearch.handleNoResults(true);
             }
         },
@@ -89,13 +89,15 @@ let app = (function(){
                 $.ajax({
                     url: "https://api.spotify.com/v1/albums/" + albumId,
                     success: function(response){
+                        console.log(response);
                         SpotifySearch.handleAlbumDetails(response, albumIndex);
                         SpotifySearch.loadAlbumDetails(albumIndex);
                     }
                 });
 
             } else {
-                console.log("That index is already in the album data array. Let's not spam Spotify :)");
+                SpotifySearch.loadAlbumDetails(albumIndex);
+                console.log("This particular album data has already been saved. Let's not spam Spotify :)");
             }
 
         },
@@ -106,23 +108,34 @@ let app = (function(){
             let albumArtist = album.artists[0].name;
             let albumArt = album.images[0].url;
             let albumReleaseDate = album.release_date.substring(0, 4);
+            let albumTracks = album.tracks.items;
 
-            function albumData(title, artist, art, date, tracks = []){
+            function albumData(title, artist, art, date, tracks){
                 this.title = title;
                 this.artist = artist;
                 this.art = art;
                 this.date = date;
-                this.tracks = tracks
+                this.tracks = tracks;
             }
 
-            let albumDataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate);
+            let albumDataObj = new albumData(albumTitle, albumArtist, albumArt, albumReleaseDate, albumTracks);
 
             SpotifySearch.albumData[albumIndex] = albumDataObj;
 
         },
 
         loadAlbumDetails: function(albumIndex){
-            console.log(SpotifySearch.albumData[albumIndex]);
+            let pageAlbumTitle = $(".album-details h1");
+            let pageAlbumArtist = $(".album-details h4");
+            let pageAlbumImg = $(".album-img img");
+
+            let albumData = SpotifySearch.albumData[albumIndex];
+
+            console.log(albumData);
+
+            pageAlbumImg.attr("src", albumData.art);
+            pageAlbumTitle.text(`${albumData.title} (${albumData.date})`);
+            pageAlbumArtist.text(albumData.artist);
         },
 
         handleNoResults: function(failure = false){

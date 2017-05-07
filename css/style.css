@@ -10,7 +10,7 @@ body {
   font: 1em/1.5 'Roboto', sans-serif;
   color: #222;
   background: #f6f7f7;
-  padding-top: 145px;
+  /*padding-top: 145px;*/
   padding-bottom: 3em;
   margin: 0;
 }
@@ -173,6 +173,70 @@ button {
   margin: auto;
 }
 
+.hide{
+    display: none !important;
+}
+
+.album-details{
+    width: 100%;
+    margin-top: 80px;
+}
+
+.album-details:before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 350px;
+    background-color: #000;
+}
+.album-details:after{
+    content: "";
+    clear: both;
+}
+
+.album-details h1,
+.album-details h4{
+    margin-top: 0;
+    padding-top: 0;
+    color: #FFF;
+}
+
+.album-details h4{
+    margin-bottom: 60px;
+}
+.album-details h5{
+    color: #000;
+    margin-bottom: 40px;
+}
+
+.album-details-wrap{
+    width: 1025px;
+    padding-top: 60px;
+    margin: 0 auto;
+}
+
+.album-details .album-img img{
+    width: 320px;
+    border: 10px solid #FFF;
+}
+
+.album-img,
+.album-content{
+    float: left;
+}
+
+.album-img{
+    padding-top: 30px;
+}
+
+.album-content{
+    padding-top: 80px;
+    margin-left: 60px;
+}
+
 .main-header {
   position: fixed;
   top: 0;
@@ -252,7 +316,7 @@ button {
 
 @media (min-width: 769px) {
   body {
-    padding-top: 115px;
+
   }
 
   .main-title {
