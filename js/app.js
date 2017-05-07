@@ -46,7 +46,7 @@ let app = (function(){
                         type: "album"
                     },
                     success: function(response){
-                        //console.log("success jqXHR", response);
+                        console.log("success jqXHR", response);
                         SpotifySearch.handleData(response);
                     }
                 });
@@ -68,11 +68,19 @@ let app = (function(){
                     let albumArtist = albumItems[albumData].artists[0].name;
                     let albumTitle = albumItems[albumData].name;
                     //let albumURL = albumItems[albumData].external_urls.spotify;
-                    let imgURL = albumItems[albumData].images[0].url;
+                    let imgAvail;
+                    let imgURL;
+                    if (albumItems[albumData].images.length > 0){
+                        imgURL = albumItems[albumData].images[0].url;
+                        imgAvail = `<img class="album-art" src="${imgURL}">`;
+                    } else {
+                        imgAvail = "No Image Available";
+                    }
+
                     let liResults = `
                         <li>
                             <div class="album-wrap">
-                                <img class="album-art" src="${imgURL}">
+                                ${imgAvail}
                             </div>
                             <span class="album-title" data-id="${albumId}">${albumTitle}</span>
                             <span class="album-artist">${albumArtist}</span>
@@ -123,7 +131,12 @@ let app = (function(){
         handleAlbumDetails: function(album, albumIndex){
             let albumTitle = album.name;
             let albumArtist = album.artists[0].name;
-            let albumArt = album.images[0].url;
+            let albumArt;
+            if (album.images.length > 0){
+                albumArt = album.images[0].url;
+            } else {
+                albumArt = "http://placehold.it/320x320";
+            }
             let albumReleaseDate = album.release_date.substring(0, 4);
             let albumTracks = album.tracks.items;
             let albumURL = album.external_urls.spotify;

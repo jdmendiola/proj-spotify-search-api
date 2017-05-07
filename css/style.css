@@ -246,6 +246,7 @@ button {
 }
 
 .album-img{
+    width: 350px;
     padding-top: 30px;
 }
 
